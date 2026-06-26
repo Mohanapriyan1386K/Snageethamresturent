@@ -1,18 +1,9 @@
 import multer from "multer";
-import path from "path";
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads/");
-    },
-    filename: function (req, file, cb) {
-        cb(
-            null,
-            Date.now() + path.extname(file.originalname)
-        )
-    }
-})
-
+// Use memory storage — Vercel's filesystem is read-only, so we cannot write
+// to disk. Files are stored as a Buffer in req.file.buffer and streamed
+// directly to Cloudinary from RAM.
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image")) {
@@ -25,4 +16,5 @@ const fileFilter = (req, file, cb) => {
 export const upload = multer({
     storage,
     fileFilter,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB max
 });

@@ -1,6 +1,5 @@
 import Product from "../schema/Product.js";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 
 
@@ -34,18 +33,22 @@ export const createProduct = async (req, res) => {
             });
         }
 
-        // Upload image to Cloudinary
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: "products",
+        // Upload image buffer directly to Cloudinary (no disk writes needed)
+        const cloudinaryResult = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+                { folder: "products" },
+                (error, result) => {
+                    if (error) return reject(error);
+                    resolve(result);
+                }
+            );
+            stream.end(req.file.buffer);
         });
-
-        // Delete local file
-        fs.unlinkSync(req.file.path);
 
         const product = await Product.create({
             name,
             quantity,
-            image: result.secure_url,
+            image: cloudinaryResult.secure_url,
         });
 
         res.status(201).json({
@@ -55,11 +58,6 @@ export const createProduct = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-
-        // Delete local file if upload failed
-        if (req.file) {
-            fs.unlink(req.file.path, () => { });
-        }
 
         res.status(500).json({
             success: false,

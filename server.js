@@ -1,17 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import fs from "fs";
 import productRoutes from "./routes/productRoutes.js";
 import connectDB from "./config/db.js";
 dotenv.config();
 connectDB();
-
-
-// Ensure uploads directory exists
-if (!fs.existsSync("uploads")) {
-    fs.mkdirSync("uploads");
-}
 
 const app = express();
 
