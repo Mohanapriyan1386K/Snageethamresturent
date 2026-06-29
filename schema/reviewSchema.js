@@ -11,11 +11,11 @@ const feedbackSchema = new mongoose.Schema(
     tableNumber: Number,
 
     ratings: {
-      food: { type: Number, min: 1, max: 5 },
-      service: { type: Number, min: 1, max: 5 },
-      ambience: { type: Number, min: 1, max: 5 },
-      cleanliness: { type: Number, min: 1, max: 5 },
-      overall: { type: Number, min: 1, max: 5 },
+      food: { type: Number, min: 0, max: 5 },
+      service: { type: Number, min: 0, max: 5 },
+      ambience: { type: Number, min: 0, max: 5 },
+      cleanliness: { type: Number, min: 0, max: 5 },
+      overall: { type: Number, min: 0, max: 5 },
     },
 
     feedback: String,
