@@ -24,12 +24,12 @@ const menuItemSchema = new mongoose.Schema(
     },
 
     category: {
-      type: [String],
+      type: String,
       required: true,
       enum: [
         "starters",
         "soups",
-        "breakfast",
+        // "breakfast",
         "south_indian",
         "north_indian",
         "rice",
