@@ -39,18 +39,28 @@ export const createMenu = async (req, res) => {
     });
   }
 };
+
 export const getMenus = async (req, res) => {
   try {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
-    const category = req.query.category;
+    const { category, name } = req.query;
 
     const skip = (page - 1) * limit;
 
     const filter = {};
 
+    // Category filter
     if (category) {
       filter.category = category;
+    }
+
+    // Name filter (case-insensitive)
+    if (name) {
+      filter.name = {
+        $regex: name,
+        $options: "i",
+      };
     }
 
     const totalRecords = await Menu.countDocuments(filter);
